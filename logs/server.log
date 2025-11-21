@@ -1,31 +1,31 @@
 INFO:     Will watch for changes in these directories: ['/home/workspace']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [285] using StatReload
-INFO:     Started server process [287]
+INFO:     Started reloader process [370] using StatReload
+INFO:     Started server process [372]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     172.20.0.1:59248 - "HEAD / HTTP/1.1" 405 Method Not Allowed
-INFO:     172.20.0.1:59258 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59288 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59258 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59308 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59288 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59300 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59288 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59308 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59258 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59300 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59258 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59300 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59272 - "GET /api/watchlist HTTP/1.1" 200 OK
-INFO:     172.20.0.1:59256 - "GET /api/watchlist HTTP/1.1" 200 OK
-INFO:     172.20.0.1:59272 - "GET /api/watchlist HTTP/1.1" 200 OK
-INFO:     172.20.0.1:59256 - "GET /api/watchlist HTTP/1.1" 200 OK
-INFO:     172.20.0.1:59258 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59256 - "GET /api/watchlist HTTP/1.1" 200 OK
-INFO:     172.20.0.1:59258 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59256 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59258 - "GET /api/watchlist HTTP/1.1" 200 OK
-INFO:     172.20.0.1:59256 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59258 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
-INFO:     172.20.0.1:59258 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50354 - "HEAD / HTTP/1.1" 405 Method Not Allowed
+INFO:     172.20.0.1:50360 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50360 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50360 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50384 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50394 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50360 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50384 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50358 - "GET /api/watchlist HTTP/1.1" 200 OK
+INFO:     172.20.0.1:50394 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50384 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50358 - "GET /api/watchlist HTTP/1.1" 200 OK
+INFO:     172.20.0.1:50384 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:58058 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50372 - "GET /api/watchlist HTTP/1.1" 200 OK
+INFO:     172.20.0.1:58058 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:50372 - "GET /api/watchlist HTTP/1.1" 200 OK
+INFO:     172.20.0.1:60972 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:60972 - "GET /api/candles?symbol=AAPL&timeframe=1m&count=400 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:60972 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:60964 - "GET /api/watchlist HTTP/1.1" 200 OK
+INFO:     172.20.0.1:60986 - "GET /api/indicators/sma?symbol=AAPL&timeframe=1m&length=20 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:60972 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:60972 - "GET /api/indicators/ema?symbol=AAPL&timeframe=1m&length=50 HTTP/1.1" 400 Bad Request
+INFO:     172.20.0.1:60964 - "GET /api/watchlist HTTP/1.1" 200 OK

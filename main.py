@@ -65,6 +65,11 @@ def timeframe_to_resolution(tf: str) -> str:
     return mapping.get(tf, "1")
 
 
+def is_forex_symbol(symbol: str) -> bool:
+    # Finnhub forex symbols look like "OANDA:EUR_USD" or "FXCM:EUR/USD" (we'll normalize with underscore)
+    return ":" in symbol and symbol.split(":", 1)[0] in {"OANDA", "FXCM"}
+
+
 # --------- Health ---------
 @app.get("/")
 def root():
@@ -82,16 +87,54 @@ def test_database():
 
 # --------- Market Data ---------
 @app.get("/api/symbols")
-def list_symbols(q: Optional[str] = Query(None, description="Search query")):
-    # Finnhub stock symbol lookup (US)
-    params = {"exchange": "US"}
-    data = _finnhub_get("/stock/symbol", params)
-    items = [
-        {"symbol": it.get("symbol"), "description": it.get("description")}
-        for it in data
-        if not q or (q.lower() in (it.get("symbol", "").lower() + it.get("description", "").lower()))
-    ]
-    return items[:100]
+def list_symbols(
+    q: Optional[str] = Query(None, description="Search query"),
+    market: str = Query("stock", description="stock | forex | all"),
+    stock_exchanges: Optional[str] = Query(None, description="Comma-separated exchanges for stocks (e.g., US,TO,L,HK)"),
+    forex_exchanges: Optional[str] = Query(None, description="Comma-separated forex sources (OANDA,FXCM)"),
+    limit: int = 200,
+):
+    items: List[dict] = []
+
+    if market in ("stock", "all"):
+        exchanges = [e.strip() for e in (stock_exchanges or "US").split(",") if e.strip()]
+        for ex in exchanges:
+            try:
+                data = _finnhub_get("/stock/symbol", {"exchange": ex})
+                for it in data:
+                    sym = it.get("symbol")
+                    desc = it.get("description")
+                    if not q or (q.lower() in (sym or "").lower() or q.lower() in (desc or "").lower()):
+                        items.append({"symbol": sym, "description": desc, "market": "stock", "exchange": ex})
+            except HTTPException:
+                continue
+
+    if market in ("forex", "all"):
+        fx_exs = [e.strip() for e in (forex_exchanges or "OANDA,FXCM").split(",") if e.strip()]
+        for ex in fx_exs:
+            try:
+                data = _finnhub_get("/forex/symbol", {"exchange": ex})
+                for it in data:
+                    sym = it.get("symbol")  # already like OANDA:EUR_USD
+                    desc = it.get("description") or sym
+                    # Normalize separator to underscore for consistency
+                    norm_sym = sym.replace("/", "_") if sym else sym
+                    if not q or (q.lower() in (norm_sym or "").lower() or q.lower() in (desc or "").lower()):
+                        items.append({"symbol": norm_sym, "description": desc, "market": "forex", "exchange": ex})
+            except HTTPException:
+                continue
+
+    # Deduplicate by symbol
+    seen = set()
+    deduped = []
+    for it in items:
+        s = it["symbol"]
+        if s and s not in seen:
+            deduped.append(it)
+            seen.add(s)
+
+    # Limit and return
+    return deduped[: max(1, min(limit, 500))]
 
 
 @app.get("/api/candles")
@@ -103,7 +146,14 @@ def candles(symbol: str, timeframe: str = "1m", count: int = 500):
     if tf in ["D", "W", "M"]:
         sec_per = 86400
     frm = to_ts - sec_per * count
-    data = _finnhub_get("/stock/candle", {"symbol": symbol, "resolution": tf, "from": frm, "to": to_ts})
+
+    if is_forex_symbol(symbol):
+        # Normalize separator for finnhub (supports underscore in OANDA/FXCM symbols)
+        sym = symbol.replace("/", "_")
+        data = _finnhub_get("/forex/candle", {"symbol": sym, "resolution": tf, "from": frm, "to": to_ts})
+    else:
+        data = _finnhub_get("/stock/candle", {"symbol": symbol, "resolution": tf, "from": frm, "to": to_ts})
+
     if data.get("s") != "ok":
         raise HTTPException(status_code=400, detail=f"No candle data: {data}")
     candles = [
@@ -115,8 +165,19 @@ def candles(symbol: str, timeframe: str = "1m", count: int = 500):
 
 @app.get("/api/quote")
 def quote(symbol: str):
-    data = _finnhub_get("/quote", {"symbol": symbol})
-    return data
+    if is_forex_symbol(symbol):
+        # Finnhub has no dedicated /forex/quote; use latest candle as quote
+        tf = timeframe_to_resolution("1m")
+        to_ts = int(time.time())
+        frm = to_ts - 3600  # last hour
+        sym = symbol.replace("/", "_")
+        data = _finnhub_get("/forex/candle", {"symbol": sym, "resolution": tf, "from": frm, "to": to_ts})
+        if data.get("s") != "ok" or not data.get("c"):
+            raise HTTPException(status_code=400, detail=f"No forex quote data: {data}")
+        return {"c": data["c"][-1], "h": data["h"][-1], "l": data["l"][-1], "o": data["o"][-1], "t": data["t"][-1]}
+    else:
+        data = _finnhub_get("/quote", {"symbol": symbol})
+        return data
 
 
 # --------- Indicators (simple server-side SMA/EMA) ---------
@@ -168,8 +229,12 @@ def add_watchlist(item: WatchlistItem):
 def place_order(order: Order):
     # For market orders, we fill immediately at last price
     if order.type == "market":
-        q = _finnhub_get("/quote", {"symbol": order.symbol})
-        last = q.get("c")
+        if is_forex_symbol(order.symbol):
+            q = quote(order.symbol)
+            last = q.get("c")
+        else:
+            q = _finnhub_get("/quote", {"symbol": order.symbol})
+            last = q.get("c")
         if not last:
             raise HTTPException(status_code=400, detail="No last price")
         order.limit_price = last
